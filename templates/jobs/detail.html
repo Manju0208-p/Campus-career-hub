@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% block title %}{{ job.title }}{% endblock %}{% block content %}<div class="row g-4"><div class="col-lg-8"><span class="badge text-bg-primary mb-2">{{ job.get_job_type_display }}</span><h1>{{ job.title }}</h1><p class="lead text-muted">{{ job.recruiter.company_name }} • {{ job.location }}</p><hr><h4>About the opportunity</h4><p class="preline">{{ job.description }}</p><h4>Required Skills</h4><div class="mb-4">{% for skill in job.skill_list %}<span class="skill-chip">{{ skill }}</span>{% endfor %}</div></div><div class="col-lg-4"><div class="card sticky-lg-top" style="top:20px"><div class="card-body"><h5>Opportunity Summary</h5><p><strong>Openings:</strong> {{ job.openings }}</p><p><strong>Location:</strong> {{ job.location }}</p><p><strong>Compensation:</strong> {{ job.stipend_or_salary|default:'Not specified' }}</p><p><strong>Deadline:</strong> {{ job.deadline|date:'d M Y'|default:'Open until filled' }}</p>{% if user.is_authenticated and user.user_type == 'student' %}{% if already %}<div class="alert alert-success">You have already applied.</div><a class="btn btn-outline-primary w-100" href="{% url 'students:applications' %}">Track Application</a>{% else %}
+    {% if job.openings > 0 %}
+        <a class="btn btn-primary w-100"
+           href="{% url 'jobs:apply' job.id %}">
+            Apply Now
+        </a>
+    {% else %}
+        <div class="alert alert-secondary text-center mb-0">
+            Applications Closed
+        </div>
+    {% endif %}
+{% endif %}{% elif not user.is_authenticated %}<a class="btn btn-primary w-100" href="{% url 'accounts:login' %}">Login to Apply</a>{% endif %}</div></div></div></div>{% endblock %}
